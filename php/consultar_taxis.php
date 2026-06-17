@@ -1,24 +1,24 @@
 <?php
-// consultar_taxis.php
-// Incluimos tu conexión hecha a mano
+// php/consultar_taxis.php
+// Incluimos tu archivo de conexión que está en la misma carpeta php/
 include_once "conexion.php";
 
 try {
-    // Cruzamos la tabla taxi con permisionario para traer el nombre del dueño
-    // NOTA: Revisa que las columnas (id_permisionario, nombre, etc.) coincidan con tu BD
-    $sql = "SELECT t.*, p.nombre AS nombre_permisionario 
+    // CORRECCIÓN: Usamos las columnas reales de tu archivo SQL
+    $sql = "SELECT t.*, p.permisionario_nombre 
             FROM taxi t 
-            INNER JOIN permisionario p ON t.id_permisionario = p.id_permisionario 
-            ORDER BY t.numero_economico ASC";
+            INNER JOIN permisionario p ON t.permisionario_id = p.permisionario_id 
+            ORDER BY t.taxi_numero_economico ASC";
     
-    // Ejecutamos la consulta directa usando tu objeto $pdo
+    // Ejecutamos la consulta usando tu objeto $pdo de conexion.php
     $stmt = $pdo->query($sql);
     
-    // Guardamos todos los registros en una variable tipo array
+    // Guardamos todos los registros en la variable que espera recibir vistas/taxis.php
     $lista_taxis = $stmt->fetchAll();
 
 } catch (\PDOException $e) {
+    // En producción es mejor guardar el error en un log, pero para la escuela esto te ayuda a debuguear
     echo "Error al consultar la flota: " . $e->getMessage();
-    $lista_taxis = []; // Lo dejamos vacío si truena para que no rompa el HTML
+    $lista_taxis = []; // Evita que el foreach del HTML truene si la consulta falla
 }
 ?>
