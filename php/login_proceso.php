@@ -2,22 +2,23 @@
 // login_proceso.php
 // Iniciamos la sesión para poder guardar al usuario en el sistema
 session_start();
+// Ajustamos la inclusión usando el archivo exacto que ya revisamos
 include_once "conexion.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recibimos los datos del formulario de login
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
     if (empty($username) || empty($password)) {
-        header("Location: login.php?error=campos_vacios");
+        // Redirigimos a través del index usando tu sistema de vistas
+        header("Location: index.php?vista=login&error=campos_vacios");
         exit();
     }
 
     try {
-        // Buscamos al usuario en la base de datos
-        // NOTA: Ajusta 'nombre_usuario' y 'contrasena' según tus columnas de la tabla 'usuario'
-        $sql = "SELECT * FROM usuario WHERE nombre_usuario = :user LIMIT 1";
+        // CORRECCIÓN 1: Usamos la columna real de tu SQL ('usuario_usuario')
+        $sql = "SELECT * FROM usuario WHERE usuario_usuario = :user LIMIT 1";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':user', $username, PDO::PARAM_STR);
         $stmt->execute();
@@ -26,36 +27,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Si el usuario existe, pasamos a validar la contraseña
         if ($usuario) {
-            // NOTA: Si estás guardando las contraseñas en texto plano (para la escuela), 
-            // usa la comparación simple: if ($password == $usuario['contrasena'])
-            // Si usaste password_hash(), usa: if (password_verify($password, $usuario['contrasena']))
-            if ($password == $usuario['contrasena']) {
+            // CORRECCIÓN 2: Usamos la columna real de tu SQL ('usuario_clave')
+            // Se queda con comparación simple (texto plano) ideal para entornos escolares
+            if ($password == $usuario['usuario_clave']) {
                 
-                // ¡Credenciales correctas! Guardamos los datos en la sesión
-                $_SESSION['id_usuario'] = $usuario['id_usuario'];
-                $_SESSION['nombre']     = $usuario['nombre_usuario'];
+                // ¡Credenciales correctas! Guardamos los datos reales en la sesión
+                $_SESSION['usuario_id'] = $usuario['usuario_id'];
+                $_SESSION['usuario_nombre'] = $usuario['usuario_nombre'];
+                $_SESSION['usuario_usuario'] = $usuario['usuario_usuario'];
                 $_SESSION['logueado']   = true;
 
-                // Redirigimos al panel principal (ajusta la ruta a tu index o dashboard)
-                header("Location: vistas/dashboard.php");
+                // CORRECCIÓN 3: Redirigimos al index pasándole la vista del panel principal (por ejemplo: 'home')
+                header("Location: index.php?vista=home");
                 exit();
             } else {
                 // Contraseña incorrecta
-                header("Location: login.php?error=password_incorrecto");
+                header("Location: index.php?vista=login&error=password_incorrecto");
                 exit();
             }
         } else {
             // El usuario no existe en la BD
-            header("Location: login.php?error=no_existe");
+            header("Location: index.php?vista=login&error=no_existe");
             exit();
         }
 
     } catch (\PDOException $e) {
-        header("Location: login.php?error=db&msg=" . urlencode($e->getMessage()));
+        header("Location: index.php?vista=login&error=db&msg=" . urlencode($e->getMessage()));
         exit();
     }
 } else {
-    header("Location: login.php");
+    header("Location: index.php?vista=login");
     exit();
 }
 ?>
