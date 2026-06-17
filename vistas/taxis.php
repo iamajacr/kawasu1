@@ -1,5 +1,11 @@
-<?php 
-// CORRECCIÓN DE RUTA: Como entramos desde index.php, la ruta es directa hacia la carpeta php/
+<?php
+// 1. Verificación de seguridad: Si no hay un ID de usuario en la sesión, el usuario no ha pasado por el login.
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: index.php?vista=login");
+    exit();
+}
+
+// 2. Incluir lógica de consulta
 include_once "php/consultar_taxis.php"; 
 ?>
 <!DOCTYPE html>

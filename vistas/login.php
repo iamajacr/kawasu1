@@ -1,3 +1,10 @@
+<?php
+// 1. Verificación: Si ya hay una sesión activa, enviamos al usuario al home directamente
+if (isset($_SESSION['usuario_id'])) {
+    header("Location: index.php?vista=home");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
