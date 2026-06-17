@@ -1,5 +1,15 @@
 <?php
-// 1. Verificación: Si ya hay una sesión activa, enviamos al usuario al home directamente
+/**
+ * vistas/login.php
+ * * Se asegura de iniciar la sesión primero para verificar si el usuario
+ * ya está autenticado. Si lo está, lo redirige al home.
+ */
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Si ya hay una sesión activa, enviamos al usuario al home directamente
 if (isset($_SESSION['usuario_id'])) {
     header("Location: index.php?vista=home");
     exit();
@@ -9,6 +19,7 @@ if (isset($_SESSION['usuario_id'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Ecotaxis Verde</title>
     <style>
         body { font-family: sans-serif; background: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
@@ -26,12 +37,17 @@ if (isset($_SESSION['usuario_id'])) {
 <div class="login-card">
     <h2>Iniciar Sesión</h2>
     
-    <?php if (isset($_GET['error'])): ?>
+    <?php 
+    // Mostramos errores si los hay
+    if (isset($_GET['error'])): ?>
         <div class="error">
             <?php 
-                if ($_GET['error'] == 'password_incorrecto') echo "Contraseña incorrecta.";
-                elseif ($_GET['error'] == 'no_existe') echo "El usuario no existe.";
-                elseif ($_GET['error'] == 'campos_vacios') echo "Completa todos los campos.";
+                switch($_GET['error']) {
+                    case 'password_incorrecto': echo "Contraseña incorrecta."; break;
+                    case 'no_existe': echo "El usuario no existe."; break;
+                    case 'campos_vacios': echo "Completa todos los campos."; break;
+                    default: echo "Error desconocido.";
+                }
             ?>
         </div>
     <?php endif; ?>

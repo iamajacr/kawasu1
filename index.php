@@ -1,6 +1,21 @@
 <?php
-    // Iniciar sesión para controlar los usuarios administradores
-    session_start();
+// 1. Configuración de errores
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// 2. Iniciar sesión
+session_start();
+
+// 3. Lógica para cerrar sesión (Añadido aquí)
+if (isset($_GET['vista']) && $_GET['vista'] == 'logout') {
+    session_destroy();
+    header("Location: index.php?vista=login");
+    exit();
+}
+
+// 4. Definición de la vista
+$vista = isset($_GET['vista']) ? $_GET['vista'] : 'login';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -13,21 +28,25 @@
 <body>
 
     <?php
-        // 1. Incluir la barra de navegación que está en la carpeta inc/
+    // 5. Incluir navegación
+    if ($vista != 'login') {
         if(file_exists("./inc/nav.php")){
             include "./inc/nav.php";
         }
+    }
 
-        // 2. Sistema de enrutamiento simple (lo que explica el curso)
-        // Si no se solicita ninguna vista, por defecto cargamos el 'login' o el 'home'
-        $vista = isset($_GET['vista']) ? $_GET['vista'] : 'login';
+    // 6. Sistema de enrutamiento seguro
+    $archivo_vista = "./vistas/" . $vista . ".php";
 
-        // Validamos que el archivo de la vista realmente exista antes de incluirlo
-        if(file_exists("./vistas/".$vista.".php")){
-            include "./vistas/".$vista.".php";
-        } else {
+    if(file_exists($archivo_vista)){
+        include $archivo_vista;
+    } else {
+        if ($vista != 'login') {
             echo "<h2>Error 404: La página no existe</h2>";
+        } else {
+            include "./vistas/login.php";
         }
+    }
     ?>
 
 </body>

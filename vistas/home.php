@@ -6,8 +6,12 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 ?>
 
-<div style="text-align: center; margin-top: 50px;">
-    <h1>¡Bienvenido al Sistema, <?php echo $_SESSION['usuario_nombre']; ?>!</h1>
+<div style="text-align: center; padding: 40px;">
+    <h1>¡Bienvenido al Sistema, Administrador!</h1>
     <p>Has iniciado sesión correctamente.</p>
-    <a href="index.php?vista=taxis">Ir a Taxis</a>
+    
+    <div style="margin-top: 20px;">
+        <a href="index.php?vista=taxis" style="padding: 10px 20px; background: #4caf50; color: white; text-decoration: none; border-radius: 5px;">Gestionar Taxis</a>
+        <a href="index.php?vista=permisionarios" style="padding: 10px 20px; background: #2196f3; color: white; text-decoration: none; border-radius: 5px; margin-left: 10px;">Gestionar Permisionarios</a>
+    </div>
 </div>
