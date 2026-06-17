@@ -1,6 +1,6 @@
 <?php 
-// Incluimos el script que va a traer los taxis de la Base de Datos
-include_once "../consultar_taxis.php"; 
+// CORRECCIÓN DE RUTA: Como entramos desde index.php, la ruta es directa hacia la carpeta php/
+include_once "php/consultar_taxis.php"; 
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -8,7 +8,6 @@ include_once "../consultar_taxis.php";
     <meta charset="UTF-8">
     <title>Sindicato - Control de Ecotaxis Verde</title>
     <style>
-        /* Estilos rápidos para que se vea ordenado y limpio en tu Arch/CachyOS */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; margin: 20px; color: #333; }
         .container { max-width: 1100px; margin: 0 auto; }
         h1 { color: #1e5631; border-bottom: 3px solid #4caf50; padding-bottom: 10px; }
@@ -47,22 +46,30 @@ include_once "../consultar_taxis.php";
     <div class="grid">
         <div class="card">
             <h3>Registrar Nueva Unidad</h3>
-            <form action="../insertar_taxi.php" method="POST">
+            <form action="php/insertar_taxi.php" method="POST">
                 <div class="form-group">
                     <label>Número Económico:</label>
-                    <input type="text" name="numero_economico" placeholder="Ej. 145" required>
+                    <input type="number" name="taxi_numero_economico" placeholder="Ej. 145" required>
                 </div>
                 <div class="form-group">
                     <label>Placas:</label>
-                    <input type="text" name="placas" placeholder="Ej. VRD-45-12" required>
+                    <input type="text" name="taxi_placa" placeholder="Ej. VRD-45-12" required>
                 </div>
                 <div class="form-group">
-                    <label>Modelo / Año:</label>
-                    <input type="text" name="modelo" placeholder="Ej. Nissan Tsuru 2015">
+                    <label>Modelo / Marca:</label>
+                    <input type="text" name="taxi_modelo" placeholder="Ej. Nissan Tsuru" required>
                 </div>
                 <div class="form-group">
-                    <label>Permisionario (Dueño):</label>
-                    <input type="number" name="id_permisionario" placeholder="ID del dueño (Ej. 1)" required>
+                    <label>Año del Vehículo:</label>
+                    <input type="number" name="taxi_año" placeholder="Ej. 2015" required>
+                </div>
+                <div class="form-group">
+                    <label>Número de Permiso:</label>
+                    <input type="text" name="taxi_permiso" placeholder="Ej. PERM-9982" required>
+                </div>
+                <div class="form-group">
+                    <label>ID Permisionario (Dueño):</label>
+                    <input type="number" name="permisionario_id" placeholder="ID del dueño registrado (Ej. 1)" required>
                 </div>
                 <button type="submit" class="btn">Guardar Taxi</button>
             </form>
@@ -75,9 +82,9 @@ include_once "../consultar_taxis.php";
                     <tr>
                         <th>No. Eco</th>
                         <th>Placas</th>
-                        <th>Modelo</th>
+                        <th>Modelo / Año</th>
+                        <th>Permiso</th>
                         <th>Permisionario</th>
-                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,11 +95,11 @@ include_once "../consultar_taxis.php";
                     <?php else: ?>
                         <?php foreach ($lista_taxis as $taxi): ?>
                             <tr>
-                                <td><strong><?php echo htmlspecialchars($taxi['numero_economico']); ?></strong></td>
-                                <td><?php echo htmlspecialchars($taxi['placas']); ?></td>
-                                <td><?php echo htmlspecialchars($taxi['modelo']); ?></td>
-                                <td><?php echo htmlspecialchars($taxi['nombre_permisionario'] ?? 'ID: ' . $taxi['id_permisionario']); ?></td>
-                                <td style="color: green; font-weight: bold;"><?php echo htmlspecialchars($taxi['estado']); ?></td>
+                                <td><strong><?php echo htmlspecialchars($taxi['taxi_numero_economico']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($taxi['taxi_placa']); ?></td>
+                                <td><?php echo htmlspecialchars($taxi['taxi_modelo'] . " (" . $taxi['taxi_año'] . ")"); ?></td>
+                                <td><?php echo htmlspecialchars($taxi['taxi_permiso']); ?></td>
+                                <td><?php echo htmlspecialchars($taxi['permisionario_nombre'] ?? 'ID: ' . $taxi['permisionario_id']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
